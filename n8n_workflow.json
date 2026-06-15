@@ -1,0 +1,275 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "=={{ $json.body?.task || $json.task }}",
+                    "rightValue": "==extract_metadata",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "301ea70d-2686-47e3-854c-86c6bd83fb34"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "3a0a5970-775e-4c2d-bc87-245f2ce7083c",
+                    "leftValue": "={{ $json.body?.task || $json.task }}",
+                    "rightValue": "=generate_easy_read",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-task-id",
+      "name": "Check Task Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        288,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=TEXTO DE LAS BASES REGULADORAS:\n---------------------------------\n{{ $json.body.text }}\n---------------------------------\nRESPUESTA JSON VÁLIDA:",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Eres un asistente de IA especializado en analizar convocatorias oficiales de subvenciones públicas.\nA partir del extracto de las bases reguladoras, debes extraer los campos estructurados en formato JSON.\n\nINSTRUCCIONES CRÍTICAS DE SIMPLIFICACIÓN:\n- Título Simplificado: Crea un título ultra-corto de MÁXIMO 4 PALABRAS. Debe ser claro para cualquier ciudadano. NUNCA uses términos burocráticos como 'Resolución', 'Decreto', 'Subvención nominativa', 'Convenio' o artículos de leyes.\n- Categoría: Clasifica en una sola palabra (ej: Vivienda, Empleo, Educación, Energía, Social).\n- Cuantía: Indica cuánto dinero recibe un ciudadano individual (ej: 'Hasta 3.000 €', '100% del coste'). NUNCA pongas el presupuesto global de la administración. Si el dinero es solo para una organización (y no para particulares), pon 'No para particulares' o 'Dinero para el club'.\n- Plazo: Fecha YYYY-MM-DD o null si no se especifica o es indefinido.\n- Atributos: Genera exactamente 3 atributos en formato de objetos JSON. Cada objeto de la lista debe tener obligatoriamente las claves: 'clave', 'valor', 'icono' y 'color'.\n  * 'clave': Exactamente 1 palabra descriptiva del atributo (ej: 'Quién', 'Ayuda', 'Requisito', 'Límite').\n  * 'valor': Valor ultra-resumido de MÁXIMO 2 palabras descriptivas (ej: 'Solo jóvenes', 'No particulares', 'Instalar placas'). NUNCA incluyas presupuestos totales ni textos largos.\n  * 'icono': Un único emoji representativo relacionado con el atributo (ej: 👤, 💰, 📅, 🏠, ⚡, 🚗, 🎓).\n  * 'color': Asigna un color según la prioridad o temática. Debe ser estrictamente uno de los siguientes: 'green', 'blue', 'orange', 'red', 'purple'.\n\nEJEMPLOS DE EXTRACCIÓN CORRECTA:\n---------------------------------\nEjemplo 1 (Ayuda para una entidad/asociación y NO para ciudadanos individuales):\nTexto: 'Decreto de la Presidencia nº 3680 por el que se aprueba el convenio con el Club Deportivo Ponce Valladolid para la realización de su programa de actividades deportivas, año 2025. El presupuesto total de la subvención asciende a 45.000 €...'\nExtracción Correcta:\n  - Título Simplificado: 'Ayuda a Club Ponce'\n  - Categoría: 'Social'\n  - Cuantía: 'No para particulares'\n  - Atributos:\n      * Clave: 'Quién', Valor: 'Solo Club Ponce', Icono: '⚽', Color: 'blue'\n      * Clave: 'Destino', Valor: 'Actividades deportivas', Icono: '📅', Color: 'orange'\n      * Clave: 'Ayuda', Valor: 'No para particulares', Icono: '🚫', Color: 'red'\n\nEjemplo 2 (Ayuda individual para ciudadanos):\nTexto: 'Convocatoria de subvenciones destinadas al alquiler de vivienda en el medio rural de la provincia de Valladolid, año 2025. Cuantía de hasta 250 € al mes por beneficiario...'\nExtracción Correcta:\n  - Título Simplificado: 'Ayuda para el alquiler'\n  - Categoría: 'Vivienda'\n  - Cuantía: 'Hasta 250 €/mes'\n  - Atributos:\n      * Clave: 'Quién', Valor: 'Inquilinos rurales', Icono: '👤', Color: 'blue'\n      * Clave: 'Ayuda', Valor: 'Pagar alquiler', Icono: '🏠', Color: 'green'\n      * Clave: 'Público', Valor: 'Para ciudadanos', Icono: '✅', Color: 'green'\n---------------------------------\n\nDevuelve la respuesta en formato JSON estructurado con las siguientes claves:\n{\n  \"titulo_simplificado\": \"...\",\n  \"categoria\": \"...\",\n  \"cuantia\": \"...\",\n  \"plazo\": \"YYYY-MM-DD\" o null,\n  \"sede_link\": \"URL o null\",\n  \"es_para_particulares\": true o false,\n  \"es_relevante\": true o false,\n  \"atributos\": [\n    {\"clave\": \"...\", \"valor\": \"...\", \"icono\": \"...\", \"color\": \"...\"},\n    {\"clave\": \"...\", \"valor\": \"...\", \"icono\": \"...\", \"color\": \"...\"},\n    {\"clave\": \"...\", \"valor\": \"...\", \"icono\": \"...\" , \"color\": \"...\"}\n  ]\n}"
+            }
+          ]
+        }
+      },
+      "id": "chain-meta-id",
+      "name": "Extract Metadata Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        608,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Título Oficial: {{ $json.body.title }}\nEs Para Particulares: {{ $json.body.es_para_particulares }}\n\nTEXTO OFICIAL A ADAPTAR:\n-------------------------\n{{ $json.body.text }}\n-------------------------\nRESPUESTA JSON VÁLIDA:",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Eres un asistente de IA especializado en analizar convocatorias oficiales de subvenciones públicas y adaptarlas a Lectura Fácil (conforme a la norma UNE 153101:2018 EX).\\nTu objetivo es transformar el texto de la subvención en una versión extremadamente simplificada.\\n\\nREGLAS CRÍTICAS DE LECTURA FÁCIL (SÉ ULTRA-CONCISO):\\n1. Escribe de forma ultra-corta. Máximo 1 frase por sección y máximo 10 palabras por frase. Sé directo y ve al grano de forma extrema. Omitir explicaciones largas o de contexto.\\n2. {{ $json.body.es_para_particulares ? \\\"Esta ayuda SÍ es para ciudadanos particulares (personas físicas, autónomos, estudiantes, familias). Por tanto, en 'quienPuedePedir' explica de forma sencilla qué personas físicas específicas pueden pedirla (ej: 'Jóvenes estudiantes' o 'Personas desempleadas'). NUNCA digas que no es para particulares. En 'cuantoDan' indica claramente qué cuantía o beneficio recibe el ciudadano individual. NUNCA digas 'Cero euros para ti' ni digas que no es para particulares.\\\" : \\\"Esta ayuda NO es para ciudadanos particulares (es para un ayuntamiento, club deportivo, empresa o asociación). Por tanto, en 'quienPuedePedir' debes escribir obligatoriamente: 'Esta ayuda no es para particulares. Solo para [tipo de entidad]' y en 'cuantoDan' debes escribir obligatoriamente: 'Cero euros para ti. El dinero va a la organización'.\\\" }}\\n3. En 'queEs': Explica qué financia la ayuda en pocas palabras sencillas.\\n4. En 'plazoComoPedir': Explica de forma directa el plazo y la forma (ej: 'Hasta el 31 de diciembre. Se pide por internet.').\\n5. Utiliza verbos activos y dirígete directamente al usuario en segunda persona (tú).\\n\\nDevuelve la respuesta en formato JSON estructurado con las siguientes claves:\\n{\\n  \\\"queEs\\\": \\\"...\\\",\\n  \\\"quienPuedePedir\\\": \\\"...\\\",\\n  \\\"cuantoDan\\\": \\\"...\\\",\\n  \\\"plazoComoPedir\\\": \\\"...\\\"\\n}\\n\\n"
+            }
+          ]
+        }
+      },
+      "id": "chain-easy-id",
+      "name": "Generate Easy Read Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        592,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text;\ntry {\n  const parsed = JSON.parse(text);\n  return [{ json: parsed }];\n} catch (e) {\n  // Si falla el parsing estricto, devolvemos el texto para que el parser del backend lo procese de forma robusta\n  return [{ json: { raw_response: text, error: e.message } }];\n}"
+      },
+      "id": "parse-meta-id",
+      "name": "Parse JSON Metadata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text;\ntry {\n  const parsed = JSON.parse(text);\n  return [{ json: parsed }];\n} catch (e) {\n  return [{ json: { raw_response: text, error: e.message } }];\n}"
+      },
+      "id": "parse-easy-id",
+      "name": "Parse JSON Easy Read",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "respond-webhook-id",
+      "name": "Responder al Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "model": "llama3",
+        "options": {
+          "temperature": 0,
+          "format": "json"
+        }
+      },
+      "id": "01b414ed-0d73-4276-b119-45d39dc2396c",
+      "name": "Ollama Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        576,
+        384
+      ],
+      "credentials": {
+        "ollamaApi": {
+          "id": "d6XJJTbnbOuajL82",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        736,
+        384
+      ],
+      "id": "b2654c02-d846-438a-bfb2-261766584f67",
+      "name": "OpenAI Chat Model"
+    }
+  ],
+  "connections": {
+    "Check Task Type": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Easy Read Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Extract Metadata Chain": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Easy Read Chain": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON Easy Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON Metadata": {
+      "main": [
+        [
+          {
+            "node": "Responder al Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON Easy Read": {
+      "main": [
+        [
+          {
+            "node": "Responder al Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Metadata Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Generate Easy Read Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ee939a6b0c4424835c3b3577cb8fb90660a7fdba0c1d2833b2406484d48e76c0"
+  }
+}

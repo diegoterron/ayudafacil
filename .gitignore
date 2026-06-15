@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+env/
+/backend/.venv/
+/backend/__pycache__/
+/backend/tests/__pycache__/
+/backend/app/__pycache__/
+/backend/app/services/__pycache__/
+
+# Node / React (Frontend)
+node_modules/
+/frontend/node_modules/
+dist/
+/frontend/dist/
+dist-ssr/
+/frontend/dist-ssr/
+*.local
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+db.sqlite3
+
+# IDE / Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

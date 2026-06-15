@@ -1,0 +1,22 @@
+--- BENCHMARK CONTROLADO ---
+Título,Fernández-Huerta BOE,Categoría BOE,Fernández-Huerta LF,Categoría LF,Mejora
+Bono Alquiler Joven,20.65,Pedante / Científico (Doctorado),86.53,Fácil (Primaria - 5º),65.88
+Subvención Placas Solares,36.51,Muy difícil (Universidad),75.54,Bastante fácil (Primaria - 6º),39.03
+Bono Cultural Joven,43.32,Muy difícil (Universidad),91.64,Muy fácil (Primaria - 4º),48.32
+Ayuda Digitalización (Kit Digital),56.95,Difícil (Bachillerato),59.27,Difícil (Bachillerato),2.32
+Ayuda Rehabilitación Fachadas,8.45,Pedante / Científico (Doctorado),66.77,Algo difícil (E.S.O. - 7º/8º),58.32
+PROMEDIO BENCHMARK,33.18,Muy difícil (Universidad),75.95,Bastante fácil (Primaria - 6º),42.77
+
+--- BASE DE DATOS (AYUDAS REALES) ---
+Título,Fernández-Huerta BOE,Categoría BOE,Fernández-Huerta LF,Categoría LF,Mejora
+Ayuda a Proyectos Energéticos,50.22,Difícil (Bachillerato),46.16,Muy difícil (Universidad),-4.06
+Ayuda para agricultura y pesca,50.95,Difícil (Bachillerato),71.83,Bastante fácil (Primaria - 6º),20.88
+Fomento Economía Social,49.06,Muy difícil (Universidad),18.08,Pedante / Científico (Doctorado),-30.98
+Ayuda para migrantes,42.08,Muy difícil (Universidad),59.06,Difícil (Bachillerato),16.98
+Ayuda a Centros Tecnológicos,56.81,Difícil (Bachillerato),67.53,Algo difícil (E.S.O. - 7º/8º),10.72
+Ayuda para jóvenes,57.08,Difícil (Bachillerato),59.67,Difícil (Bachillerato),2.60
+Ayudas a la digitalización,38.00,Muy difícil (Universidad),55.64,Difícil (Bachillerato),17.64
+Ayuda para cómics,63.08,Algo difícil (E.S.O. - 7º/8º),76.02,Bastante fácil (Primaria - 6º),12.95
+Ayuda a Bibliotecas,44.23,Muy difícil (Universidad),36.03,Muy difícil (Universidad),-8.20
+Subvención para empleo,66.16,Algo difícil (E.S.O. - 7º/8º),51.21,Difícil (Bachillerato),-14.95
+PROMEDIO BASE DE DATOS,51.77,Difícil (Bachillerato),54.12,Difícil (Bachillerato),2.36

@@ -1,0 +1,77 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: ayudafacil_db
+    restart: always
+    environment:
+      POSTGRES_DB: ayudafacil_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ayudafacil_net
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: ayudafacil_n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - GENERIC_TIMEZONE=Europe/Madrid
+      - TZ=Europe/Madrid
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=ayudafacil_db
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=postgres_password
+    volumes:
+      - n8n_data:/home/node/.n8n
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ayudafacil_net
+    depends_on:
+      - db
+
+  backend:
+    build: ./backend
+    container_name: ayudafacil_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres_password@db:5432/ayudafacil_db
+      - N8N_BASE_URL=http://n8n:5678
+      - PROVIDER=ollama
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    networks:
+      - ayudafacil_net
+    depends_on:
+      - db
+      - n8n
+
+  frontend:
+    build: ./frontend
+    container_name: ayudafacil_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    networks:
+      - ayudafacil_net
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  n8n_data:
+
+networks:
+  ayudafacil_net:
