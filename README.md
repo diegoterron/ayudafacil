@@ -57,7 +57,7 @@ docker exec -it ayudafacil_backend python reset_db.py
 
 ### 5. Correr ETL (Ingesta de datos)
 
-Descarga ayudas reales de la BDNS/BOE e indexa en base de datos:
+Descarga ayudas reales de la BDNS/BOE e indexa en base de datos (también se puede hacer desde la interfaz, usuario admin contraseña admin):
 
 ```bash
 docker exec -it ayudafacil_backend python etl_pipeline.py
